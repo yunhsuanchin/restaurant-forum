@@ -6,7 +6,7 @@ const adminController = {
     const restaurants = await Restaurant.findAll({ raw: true })
     res.render('admin/restaurants', { restaurants })
   },
-  createRestaurantPage (req, res) {
+  createRestaurantPage: (req, res) => {
     res.render('admin/create')
   },
   postRestaurant: async (req, res) => {
@@ -22,6 +22,12 @@ const adminController = {
     } catch (error) {
       console.log(error)
     }
+  },
+  getRestaurant: async (req, res) => {
+    const id = req.params.id
+    console.log('req.params', req.params)
+    const restaurant = await Restaurant.findByPk(id, { raw: true })
+    res.render('admin/restaurant', { restaurant })
   }
 }
 

@@ -3,7 +3,7 @@ const db = require('../models')
 const User = db.User
 
 const userController = {
-  signUpPage (req, res) {
+  signUpPage: (req, res) => {
     return res.render('signup')
   },
   signUp: async (req, res, next) => {
@@ -28,14 +28,14 @@ const userController = {
       console.log(error)
     }
   },
-  signInPage (req, res) {
+  signInPage: (req, res) => {
     res.render('signin')
   },
-  signIn (req, res) {
+  signIn: (req, res) => {
     req.flash('success_msg', 'Welcome!')
     res.redirect('/restaurants')
   },
-  signOut (req, res) {
+  signOut: (req, res) => {
     req.logout()
     req.flash('success_msg', 'Bye bye, see you next time.')
     res.redirect('/signin')
