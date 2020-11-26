@@ -15,12 +15,12 @@ const adminController = {
   },
   postRestaurant: async (req, res) => {
     try {
-      const newRestaurant = Object.assign({}, req.body)
-      if (!newRestaurant.name) {
+      const restaurant = Object.assign({}, req.body)
+      if (!restaurant.name) {
         req.flash('error_msg', 'Name field is required.')
         return res.redirect('back')
       }
-      await Restaurant.create(newRestaurant)
+      await Restaurant.create(restaurant)
       req.flash('success_msg', 'Successfully create a new restaurant.')
       res.redirect('/admin/restaurants')
     } catch (error) {
@@ -55,6 +55,19 @@ const adminController = {
       let restaurant = await Restaurant.findByPk(id)
       restaurant = Object.assign(restaurant, req.body)
       await restaurant.save()
+      req.flash('success_msg', 'The restaurant has been updated.')
+      res.redirect('/admin/restaurants')
+    } catch (error) {
+      console.log(error)
+    }
+  },
+  deleteRestaurant: async (req, res) => {
+    try {
+      const id = req.params.id
+      await Restaurant.destroy({
+        where: { id }
+      })
+      req.flash('success_msg', 'The restaurant has been removed.')
       res.redirect('/admin/restaurants')
     } catch (error) {
       console.log(error)
