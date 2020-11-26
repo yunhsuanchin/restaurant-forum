@@ -44,6 +44,21 @@ const adminController = {
     } catch (error) {
       console.log(error)
     }
+  },
+  putRestaurant: async (req, res) => {
+    try {
+      const id = req.params.id
+      if (!req.body.name) {
+        req.flash('error_msg', 'Name field is required.')
+        return res.redirect('back')
+      }
+      let restaurant = await Restaurant.findByPk(id)
+      restaurant = Object.assign(restaurant, req.body)
+      await restaurant.save()
+      res.redirect('/admin/restaurants')
+    } catch (error) {
+      console.log(error)
+    }
   }
 }
 

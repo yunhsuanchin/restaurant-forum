@@ -4,6 +4,7 @@ const db = require('./models')
 const bodyParser = require('body-parser')
 const session = require('express-session')
 const flash = require('connect-flash')
+const methodOverride = require('method-override')
 const passport = require('./config/passport')
 const routes = require('./routes')
 const app = express()
@@ -12,6 +13,7 @@ const port = 3000
 app.engine('hbs', exphbs({ defaultLayout: 'main', extname: '.hbs' }))
 app.set('view engine', 'hbs')
 app.use(bodyParser.urlencoded({ extended: true }))
+app.use(methodOverride('_method'))
 app.use(session({
   secret: 'ThisIsMySecret',
   resave: false,
