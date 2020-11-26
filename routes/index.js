@@ -11,7 +11,9 @@ module.exports = (app) => {
   app.get('/admin/restaurants', adminController.getRestaurants)
 
   app.get('/signup', userController.signUpPage)
-  app.post('/signup', userController.signUp)
+  app.post('/signup', userController.signUp, passport.authenticate('local', {
+    failureRedirect: '/signin'
+  }), userController.signIn)
 
   app.get('/signin', userController.signInPage)
   app.post('/signin', passport.authenticate('local', {

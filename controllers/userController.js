@@ -6,7 +6,7 @@ const userController = {
   signUpPage (req, res) {
     return res.render('signup')
   },
-  signUp: async (req, res) => {
+  signUp: async (req, res, next) => {
     try {
       const { name, email, password, passwordCheck } = req.body
       const user = await User.findOne({ where: { email } })
@@ -23,7 +23,7 @@ const userController = {
         email,
         password: bcrypt.hashSync(password, bcrypt.genSaltSync(10), null)
       })
-        .then(user => res.redirect('/signin'))
+      next()
     } catch (error) {
       console.log(error)
     }
