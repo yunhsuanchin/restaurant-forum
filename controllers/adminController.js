@@ -3,8 +3,12 @@ const Restaurant = db.Restaurant
 
 const adminController = {
   getRestaurants: async (req, res) => {
-    const restaurants = await Restaurant.findAll({ raw: true })
-    res.render('admin/restaurants', { restaurants })
+    try {
+      const restaurants = await Restaurant.findAll({ raw: true })
+      res.render('admin/restaurants', { restaurants })
+    } catch (error) {
+      console.log(error)
+    }
   },
   createRestaurantPage: (req, res) => {
     res.render('admin/create')
@@ -24,10 +28,22 @@ const adminController = {
     }
   },
   getRestaurant: async (req, res) => {
-    const id = req.params.id
-    console.log('req.params', req.params)
-    const restaurant = await Restaurant.findByPk(id, { raw: true })
-    res.render('admin/restaurant', { restaurant })
+    try {
+      const id = req.params.id
+      const restaurant = await Restaurant.findByPk(id, { raw: true })
+      res.render('admin/restaurant', { restaurant })
+    } catch (error) {
+      console.log(error)
+    }
+  },
+  editRestaurant: async (req, res) => {
+    try {
+      const id = req.params.id
+      const restaurant = await Restaurant.findByPk(id, { raw: true })
+      res.render('admin/create', { restaurant })
+    } catch (error) {
+      console.log(error)
+    }
   }
 }
 
