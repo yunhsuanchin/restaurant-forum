@@ -8,7 +8,16 @@ const userController = {
   },
   signUp: async (req, res) => {
     try {
-      const { name, email, password } = req.body
+      const { name, email, password, passwordCheck } = req.body
+      const user = await User.findOne({ where: { email } })
+      if (user) {
+        return res.render('signup', { name, email, error_msg: 'This email is already exists.' })
+      }
+
+      if (password !== passwordCheck) {
+        return res.render('signup', { name, email, error_msg: 'The password does not match.' })
+      }
+
       await User.create({
         name,
         email,

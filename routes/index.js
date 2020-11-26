@@ -11,4 +11,6 @@ module.exports = (app) => {
 
   app.get('/signup', userController.signUpPage)
   app.post('/signup', userController.signUp)
+
+  app.get('/signin', (req, res) => res.send('signin'))
 }
