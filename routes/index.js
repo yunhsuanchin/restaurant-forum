@@ -4,11 +4,30 @@ const userController = require('../controllers/userController')
 const passport = require('passport')
 
 module.exports = (app) => {
-  app.get('/', (req, res) => res.redirect('/restaurants'))
-  app.get('/restaurants', restController.getRestaurants)
+  const authenticator = (req, res, next) => {
+    if (req.isAuthenticated()) {
+      return next()
+    }
+    req.flash('warning_msg', 'Please login first.')
+    res.redirect('/signin')
+  }
+  const isAuthenticatedAdmin = (req, res, next) => {
+    if (req.isAuthenticated()) {
+      if (req.user.isAdmin) {
+        return next()
+      }
+      req.flash('warning_msg', 'This page can only be accessed by administrators.')
+      res.redirect('/signin')
+    }
+    req.flash('warning_msg', 'This page can only be accessed by administrators.')
+    res.redirect('/signin')
+  }
 
-  app.get('/admin', (req, res) => res.redirect('/admin/restaurants'))
-  app.get('/admin/restaurants', adminController.getRestaurants)
+  app.get('/', authenticator, (req, res) => res.redirect('/restaurants'))
+  app.get('/restaurants', authenticator, restController.getRestaurants)
+
+  app.get('/admin', isAuthenticatedAdmin, (req, res) => res.redirect('/admin/restaurants'))
+  app.get('/admin/restaurants', isAuthenticatedAdmin, adminController.getRestaurants)
 
   app.get('/signup', userController.signUpPage)
   app.post('/signup', userController.signUp, passport.authenticate('local', {
