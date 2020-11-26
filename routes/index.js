@@ -1,6 +1,7 @@
 const restController = require('../controllers/restController')
 const adminController = require('../controllers/adminController')
 const userController = require('../controllers/userController')
+const passport = require('passport')
 
 module.exports = (app) => {
   app.get('/', (req, res) => res.redirect('/restaurants'))
@@ -12,5 +13,10 @@ module.exports = (app) => {
   app.get('/signup', userController.signUpPage)
   app.post('/signup', userController.signUp)
 
-  app.get('/signin', (req, res) => res.send('signin'))
+  app.get('/signin', userController.signInPage)
+  app.post('/signin', passport.authenticate('local', {
+    failureRedirect: '/signin',
+    failureFlash: true
+  }), userController.signIn)
+  app.get('/signout', userController.signOut)
 }

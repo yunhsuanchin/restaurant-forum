@@ -4,6 +4,8 @@ const db = require('./models')
 const bodyParser = require('body-parser')
 const session = require('express-session')
 const flash = require('connect-flash')
+const passport = require('./config/passport')
+const routes = require('./routes')
 const app = express()
 const port = 3000
 
@@ -23,7 +25,8 @@ app.use((req, res, next) => {
   next()
 })
 
-require('./routes')(app)
+passport(app)
+routes(app)
 
 app.listen(port, () => {
   db.sequelize.sync()
