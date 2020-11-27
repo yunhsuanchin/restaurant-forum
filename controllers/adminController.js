@@ -1,5 +1,6 @@
 const db = require('../models')
 const Restaurant = db.Restaurant
+const fs = require('fs')
 
 const adminController = {
   getRestaurants: async (req, res) => {
@@ -15,11 +16,21 @@ const adminController = {
   },
   postRestaurant: async (req, res) => {
     try {
+      const { file } = req
       const restaurant = Object.assign({}, req.body)
       if (!restaurant.name) {
         req.flash('error_msg', 'Name field is required.')
         return res.redirect('back')
       }
+
+      if (file) {
+        const data = fs.readFileSync(file.path)
+        fs.writeFileSync(`upload/${file.originalname}`, data)
+        restaurant.image = `/upload/${file.originalname}`
+      } else {
+        restaurant.image = null
+      }
+
       await Restaurant.create(restaurant)
       req.flash('success_msg', 'Successfully create a new restaurant.')
       res.redirect('/admin/restaurants')
@@ -47,6 +58,7 @@ const adminController = {
   },
   putRestaurant: async (req, res) => {
     try {
+      const { file } = req
       const id = req.params.id
       if (!req.body.name) {
         req.flash('error_msg', 'Name field is required.')
@@ -54,6 +66,15 @@ const adminController = {
       }
       let restaurant = await Restaurant.findByPk(id)
       restaurant = Object.assign(restaurant, req.body)
+
+      if (file) {
+        const data = fs.readFileSync(file.path)
+        fs.writeFileSync(`upload/${file.originalname}`, data)
+        restaurant.image = `/upload/${file.originalname}`
+      } else {
+        restaurant.image = null
+      }
+
       await restaurant.save()
       req.flash('success_msg', 'The restaurant has been updated.')
       res.redirect('/admin/restaurants')

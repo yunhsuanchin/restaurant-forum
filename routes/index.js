@@ -2,6 +2,8 @@ const restController = require('../controllers/restController')
 const adminController = require('../controllers/adminController')
 const userController = require('../controllers/userController')
 const passport = require('passport')
+const multer = require('multer')
+const upload = multer({ dest: 'uploads/' })
 
 module.exports = (app) => {
   const authenticator = (req, res, next) => {
@@ -29,10 +31,10 @@ module.exports = (app) => {
   app.get('/admin', isAuthenticatedAdmin, (req, res) => res.redirect('/admin/restaurants'))
   app.get('/admin/restaurants', isAuthenticatedAdmin, adminController.getRestaurants)
   app.get('/admin/restaurants/create', adminController.createRestaurantPage)
-  app.post('/admin/restaurants', adminController.postRestaurant)
+  app.post('/admin/restaurants', upload.single('image'), adminController.postRestaurant)
   app.get('/admin/restaurants/:id', adminController.getRestaurant)
   app.get('/admin/restaurants/:id/edit', adminController.editRestaurant)
-  app.put('/admin/restaurants/:id', adminController.putRestaurant)
+  app.put('/admin/restaurants/:id', upload.single('image'), adminController.putRestaurant)
   app.delete('/admin/restaurants/:id', adminController.deleteRestaurant)
 
   app.get('/signup', userController.signUpPage)
