@@ -3,19 +3,20 @@ const adminController = require('../controllers/adminController')
 const userController = require('../controllers/userController')
 const passport = require('passport')
 const multer = require('multer')
+const helpers = require('../_helpers')
 const upload = multer({ dest: 'uploads/' })
 
 module.exports = (app) => {
   const authenticator = (req, res, next) => {
-    if (req.isAuthenticated()) {
+    if (helpers.ensureAuthenticated(req)) {
       return next()
     }
     req.flash('warning_msg', 'Please login first.')
     res.redirect('/signin')
   }
   const isAuthenticatedAdmin = (req, res, next) => {
-    if (req.isAuthenticated()) {
-      if (req.user.isAdmin) {
+    if (helpers.ensureAuthenticated(req)) {
+      if (helpers.getUser(req).isAdmin) {
         return next()
       }
       req.flash('warning_msg', 'This page can only be accessed by administrators.')
