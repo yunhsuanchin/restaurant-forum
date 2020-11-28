@@ -1,6 +1,8 @@
 const db = require('../models')
 const Restaurant = db.Restaurant
-const fs = require('fs')
+// const fs = require('fs')
+const imgur = require('imgur-node-api')
+const IMGUR_CLIENT_ID = '3736399aad2d3a0'
 
 const adminController = {
   getRestaurants: async (req, res) => {
@@ -24,9 +26,20 @@ const adminController = {
       }
 
       if (file) {
-        const data = fs.readFileSync(file.path)
-        fs.writeFileSync(`upload/${file.originalname}`, data)
-        restaurant.image = `/upload/${file.originalname}`
+        imgur.setClientID(IMGUR_CLIENT_ID)
+        const imgurUpload = new Promise((resolve, reject) => {
+          imgur.upload(file.path, (err, img) => {
+            if (err) {
+              return reject(err)
+            }
+            return resolve(img)
+          })
+        })
+        const img = await imgurUpload
+        restaurant.image = img.data.link
+        // const data = fs.readFileSync(file.path)
+        // fs.writeFileSync(`upload/${file.originalname}`, data)
+        // restaurant.image = `/upload/${file.originalname}`
       } else {
         restaurant.image = null
       }
@@ -68,13 +81,21 @@ const adminController = {
       restaurant = Object.assign(restaurant, req.body)
 
       if (file) {
-        const data = fs.readFileSync(file.path)
-        fs.writeFileSync(`upload/${file.originalname}`, data)
-        restaurant.image = `/upload/${file.originalname}`
-      } else {
-        restaurant.image = null
+        imgur.setClientID(IMGUR_CLIENT_ID)
+        const imgurUpload = new Promise((resolve, reject) => {
+          imgur.upload(file.path, (err, img) => {
+            if (err) {
+              return reject(err)
+            }
+            return resolve(img)
+          })
+        })
+        const img = await imgurUpload
+        restaurant.image = img.data.link
+        // const data = fs.readFileSync(file.path)
+        // fs.writeFileSync(`upload/${file.originalname}`, data)
+        // restaurant.image = `/upload/${file.originalname}`
       }
-
       await restaurant.save()
       req.flash('success_msg', 'The restaurant has been updated.')
       res.redirect('/admin/restaurants')
