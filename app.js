@@ -22,6 +22,12 @@ app.engine('hbs', exphbs({
   helpers: {
     indexCount (value, options) {
       return parseInt(value) + 1
+    },
+    isAdmin (value, option) {
+      return value ? 'admin' : 'user'
+    },
+    adminToggle (value, option) {
+      return value ? 'user' : 'admin'
     }
   }
 }))

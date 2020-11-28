@@ -1,6 +1,6 @@
 const db = require('../models')
 const Restaurant = db.Restaurant
-// const fs = require('fs')
+const User = db.User
 const imgur = require('imgur-node-api')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 
@@ -111,6 +111,28 @@ const adminController = {
       })
       req.flash('success_msg', 'The restaurant has been removed.')
       res.redirect('/admin/restaurants')
+    } catch (error) {
+      console.log(error)
+    }
+  },
+  getUsers: async (req, res) => {
+    try {
+      const users = await User.findAll({ raw: true })
+      res.render('admin/users', { users })
+    } catch (error) {
+      console.log(error)
+    }
+  },
+  putUsers: async (req, res) => {
+    try {
+      const id = req.params.id
+      const user = await User.findByPk(id)
+      console.log('user 1', user)
+      user.isAdmin = user.isAdmin === false
+      console.log('user 2', user)
+      await user.save()
+      req.flash('success_msg', `${user.name}'s role has been changed to ${user.isAdmin ? 'admin' : 'user'}.`)
+      res.redirect('/admin/users')
     } catch (error) {
       console.log(error)
     }

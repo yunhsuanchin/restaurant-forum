@@ -20,7 +20,7 @@ module.exports = (app) => {
         return next()
       }
       req.flash('warning_msg', 'This page can only be accessed by administrators.')
-      res.redirect('/signin')
+      return res.redirect('/signin')
     }
     req.flash('warning_msg', 'This page can only be accessed by administrators.')
     res.redirect('/signin')
@@ -31,12 +31,14 @@ module.exports = (app) => {
 
   app.get('/admin', isAuthenticatedAdmin, (req, res) => res.redirect('/admin/restaurants'))
   app.get('/admin/restaurants', isAuthenticatedAdmin, adminController.getRestaurants)
-  app.get('/admin/restaurants/create', adminController.createRestaurantPage)
-  app.post('/admin/restaurants', upload.single('image'), adminController.postRestaurant)
-  app.get('/admin/restaurants/:id', adminController.getRestaurant)
-  app.get('/admin/restaurants/:id/edit', adminController.editRestaurant)
-  app.put('/admin/restaurants/:id', upload.single('image'), adminController.putRestaurant)
-  app.delete('/admin/restaurants/:id', adminController.deleteRestaurant)
+  app.get('/admin/restaurants/create', isAuthenticatedAdmin, adminController.createRestaurantPage)
+  app.post('/admin/restaurants', isAuthenticatedAdmin, upload.single('image'), adminController.postRestaurant)
+  app.get('/admin/restaurants/:id', isAuthenticatedAdmin, adminController.getRestaurant)
+  app.get('/admin/restaurants/:id/edit', isAuthenticatedAdmin, adminController.editRestaurant)
+  app.put('/admin/restaurants/:id', isAuthenticatedAdmin, upload.single('image'), adminController.putRestaurant)
+  app.delete('/admin/restaurants/:id', isAuthenticatedAdmin, adminController.deleteRestaurant)
+  app.get('/admin/users', isAuthenticatedAdmin, adminController.getUsers)
+  app.put('/admin/users/:id/toggleAdmin', isAuthenticatedAdmin, adminController.putUsers)
 
   app.get('/signup', userController.signUpPage)
   app.post('/signup', userController.signUp, passport.authenticate('local', {
