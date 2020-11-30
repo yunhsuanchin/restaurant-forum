@@ -9,6 +9,19 @@ const categoryController = {
     } catch (error) {
       console.log(error)
     }
+  },
+  postCategory: async (req, res) => {
+    try {
+      const name = req.body.name
+      if (!name) {
+        req.flash('error_msg', 'Name field can not be empty.')
+        return res.redirect('back')
+      }
+      Category.create({ name })
+      res.redirect('/admin/categories')
+    } catch (error) {
+      console.log(error)
+    }
   }
 }
 
