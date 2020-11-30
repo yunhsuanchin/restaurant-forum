@@ -11,6 +11,7 @@ module.exports = {
         opening_hours: '08:00',
         image: `https://loremflickr.com/320/240/restaurant,food/?random=${Math.random() * 100}`,
         description: faker.lorem.text(),
+        CategoryId: Math.floor(Math.random() * 6) * 10 + 1,
         createdAt: new Date(),
         updatedAt: new Date()
       })), {}
