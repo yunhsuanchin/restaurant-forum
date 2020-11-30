@@ -15,6 +15,15 @@ const restController = {
     } catch (error) {
       console.log(error)
     }
+  },
+  getRestaurant: async (req, res) => {
+    try {
+      const id = req.params.id
+      const restaurant = await Restaurant.findByPk(id, { include: Category })
+      res.render('restaurant', { restaurant: restaurant.toJSON() })
+    } catch (error) {
+      console.log(error)
+    }
   }
 }
 
