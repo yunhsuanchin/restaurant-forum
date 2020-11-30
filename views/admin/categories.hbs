@@ -1,13 +1,24 @@
 <h1>餐廳後台</h1>
-<a href='/admin/restaurants'>Restaurants</a> |
-<a href='/admin/categories'>Categories</a>
+<a href="/admin/restaurants">Restaurants</a> | 
+<a href="/admin/users">Users</a> | 
+<a href="/admin/categories">Categories</a>
 <br />
 <br />
 <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded shadow-sm">
-  <form action="/admin/categories" method="POST">
-    <input type="text" placeholder="name" name="name">
-    <button type="submit">Submit</button>
-  </form>
+
+{{#if category}}
+<form action="/admin/categories/{{category.dataValues.id}}?_method=PUT" method="POST">
+  <input type="text" name="name" value="{{category.dataValues.name}}">
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+<span style="color: black;" class="ml-1 mr-1">or</span>
+<a href="/admin/categories">Create New</a>
+{{else}}
+<form action="/admin/categories" method="POST">
+  <input type="text" name="name" placeholder="name">
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{{/if}}
 </div>
 <br />
 <br />
