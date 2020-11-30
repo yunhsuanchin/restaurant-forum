@@ -20,6 +20,7 @@ const categoryController = {
         return res.redirect('back')
       }
       Category.create({ name })
+      req.flash('success_msg', 'Successfully created!')
       res.redirect('/admin/categories')
     } catch (error) {
       console.log(error)
@@ -36,7 +37,17 @@ const categoryController = {
       await Category.update({ name }, {
         where: { id }
       })
-      req.flash('success_msg', 'Successfully update!')
+      req.flash('success_msg', 'Successfully updated!')
+      res.redirect('/admin/categories')
+    } catch (error) {
+      console.log(error)
+    }
+  },
+  deleteCategory: async (req, res) => {
+    try {
+      const id = req.params.id
+      await Category.destroy({ where: { id } })
+      req.flash('success_msg', 'Successfully deleted!')
       res.redirect('/admin/categories')
     } catch (error) {
       console.log(error)
