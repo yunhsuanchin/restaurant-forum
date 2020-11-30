@@ -20,17 +20,7 @@ const port = process.env.PORT || 3000
 app.engine('hbs', exphbs({
   defaultLayout: 'main',
   extname: '.hbs',
-  helpers: {
-    indexCount (value, options) {
-      return parseInt(value) + 1
-    },
-    isAdmin (value, option) {
-      return value ? 'admin' : 'user'
-    },
-    adminToggle (value, option) {
-      return value ? 'user' : 'admin'
-    }
-  }
+  helpers: require('./config/handlebars-helper')
 }))
 app.set('view engine', 'hbs')
 app.use(bodyParser.urlencoded({ extended: true }))

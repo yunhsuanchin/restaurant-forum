@@ -13,7 +13,11 @@
     <select class="form-control" id="category" name="CategoryId">
       <option value="" selected disabled>Please select a category</option>
     {{#each categories}}
-      <option value="{{this.id}}">{{this.name}}</option>
+      <option value="{{this.id}}"
+        {{#ifEqual this.id ../restaurant.CategoryId}}
+          selected
+        {{/ifEqual}}
+      >{{this.name}}</option>
     {{/each}}
     </select>
   </div>
