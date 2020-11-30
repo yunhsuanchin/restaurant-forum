@@ -3,6 +3,11 @@ const Restaurant = db.Restaurant
 const Category = db.Category
 const User = db.User
 const imgur = require('imgur-node-api')
+
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 
 const adminController = {
@@ -14,8 +19,13 @@ const adminController = {
       console.log(error)
     }
   },
-  createRestaurantPage: (req, res) => {
-    res.render('admin/create')
+  createRestaurantPage: async (req, res) => {
+    try {
+      const categories = await Category.findAll({ raw: true, nest: true })
+      res.render('admin/create', { categories })
+    } catch (error) {
+      console.log(error)
+    }
   },
   postRestaurant: async (req, res) => {
     try {
@@ -64,8 +74,9 @@ const adminController = {
   editRestaurant: async (req, res) => {
     try {
       const id = req.params.id
-      const restaurant = await Restaurant.findByPk(id, { raw: true })
-      res.render('admin/create', { restaurant })
+      const restaurant = await Restaurant.findByPk(id)
+      const categories = await Category.findAll({ raw: true, nest: true })
+      res.render('admin/create', { restaurant: restaurant.toJSON(), categories })
     } catch (error) {
       console.log(error)
     }
@@ -118,7 +129,7 @@ const adminController = {
   },
   getUsers: async (req, res) => {
     try {
-      const users = await User.findAll({ raw: true })
+      const users = await User.findAll({ raw: true, nest: true })
       res.render('admin/users', { users })
     } catch (error) {
       console.log(error)
