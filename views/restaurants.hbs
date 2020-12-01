@@ -1,6 +1,6 @@
 <ul class="nav nav-pills">
   <li class="nav-item">
-    <a class="nav-link {{#unless categoryId}}active{{/unless}}" href="?categoryId=">全部</a>
+    <a class="nav-link {{#unless categoryId}}active{{/unless}}" href="?categoryId=0">全部</a>
   </li>
   {{#each categories}}
     <li class="nav-item">
@@ -34,3 +34,22 @@
 </div>
 <br />
 <br />
+
+{{!-- pagination --}}
+<nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-center">
+    <li class="page-item {{#ifEqual page 1}}disabled{{/ifEqual}}">
+      <a class="page-link" href="/restaurants?page={{prev}}&categoryId={{categoryId}}" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    {{#each pages}}
+    <li class="page-item {{#ifEqual this ../page}}active{{/ifEqual}}"><a class="page-link" href="/restaurants?page={{this}}&categoryId={{categoryId}}">{{this}}</a></li>
+    {{/each}}
+    <li class="page-item {{#ifEqual page totalPage}}disabled{{/ifEqual}}">
+      <a class="page-link" href="/restaurants?page={{next}}&categoryId={{categoryId}}" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>
