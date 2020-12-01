@@ -33,6 +33,7 @@ module.exports = (app) => {
   app.get('/restaurants/:id', authenticator, restController.getRestaurant)
 
   app.post('/comments', authenticator, commentController.postComment)
+  app.delete('/comments/:id', isAuthenticatedAdmin, commentController.deleteComment)
 
   app.get('/admin', isAuthenticatedAdmin, (req, res) => res.redirect('/admin/restaurants'))
   app.get('/admin/restaurants', isAuthenticatedAdmin, adminController.getRestaurants)

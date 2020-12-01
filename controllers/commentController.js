@@ -17,6 +17,16 @@ const commentController = {
     } catch (error) {
       console.log(error)
     }
+  },
+  deleteComment: async (req, res) => {
+    try {
+      const id = req.params.id
+      await Comment.destroy({ where: { id } })
+      req.flash('success_msg', 'Successfully delete!')
+      res.redirect('back')
+    } catch (error) {
+      console.log(error)
+    }
   }
 }
 
