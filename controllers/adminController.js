@@ -135,13 +135,14 @@ const adminController = {
       console.log(error)
     }
   },
-  putUsers: async (req, res) => {
+  toggleAdmin: async (req, res) => {
     try {
       const id = req.params.id
       const user = await User.findByPk(id)
-      console.log('user 1', user)
+      if (user) {
+        return req.flash('error_msg', 'This user has not been registered.')
+      }
       user.isAdmin = user.isAdmin === false
-      console.log('user 2', user)
       await user.save()
       req.flash('success_msg', `${user.name}'s role has been changed to ${user.isAdmin ? 'admin' : 'user'}.`)
       res.redirect('/admin/users')

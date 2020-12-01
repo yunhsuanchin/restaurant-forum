@@ -39,6 +39,9 @@ const userController = {
     req.logout()
     req.flash('success_msg', 'Bye bye, see you next time.')
     res.redirect('/signin')
+  },
+  getUser: (req, res) => {
+
   }
 }
 

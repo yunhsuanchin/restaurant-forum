@@ -44,7 +44,7 @@ module.exports = (app) => {
   app.put('/admin/restaurants/:id', isAuthenticatedAdmin, upload.single('image'), adminController.putRestaurant)
   app.delete('/admin/restaurants/:id', isAuthenticatedAdmin, adminController.deleteRestaurant)
   app.get('/admin/users', isAuthenticatedAdmin, adminController.getUsers)
-  app.put('/admin/users/:id/toggleAdmin', isAuthenticatedAdmin, adminController.putUsers)
+  app.put('/admin/users/:id/toggleAdmin', isAuthenticatedAdmin, adminController.toggleAdmin)
   app.get('/admin/categories', isAuthenticatedAdmin, categoryController.getCategories)
   app.get('/admin/categories/:id', isAuthenticatedAdmin, categoryController.getCategories)
   app.post('/admin/categories', isAuthenticatedAdmin, categoryController.postCategory)
