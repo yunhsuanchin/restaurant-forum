@@ -1,6 +1,8 @@
 const db = require('../models')
 const Restaurant = db.Restaurant
 const Category = db.Category
+const Comment = db.Comment
+const User = db.User
 const limit = 12
 
 const restController = {
@@ -53,7 +55,12 @@ const restController = {
   getRestaurant: async (req, res) => {
     try {
       const id = req.params.id
-      const restaurant = await Restaurant.findByPk(id, { include: Category })
+      const restaurant = await Restaurant.findByPk(id, {
+        include: [
+          Category,
+          { model: Comment, include: User }
+        ]
+      })
       res.render('restaurant', { restaurant: restaurant.toJSON() })
     } catch (error) {
       console.log(error)
