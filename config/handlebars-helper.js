@@ -1,3 +1,5 @@
+const moment = require('moment')
+
 module.exports = {
   indexCount (value, options) {
     return parseInt(value) + 1
@@ -14,5 +16,8 @@ module.exports = {
     } else {
       return options.inverse(this)
     }
+  },
+  moment (value) {
+    return moment(value).fromNow()
   }
 }
