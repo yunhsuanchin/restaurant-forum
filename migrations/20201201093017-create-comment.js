@@ -1,7 +1,5 @@
 'use strict';
 
-const { fakeServer } = require("sinon");
-
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('Comments', {
@@ -15,20 +13,10 @@ module.exports = {
         type: Sequelize.TEXT
       },
       UserId: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        reference: {
-          model: 'Users',
-          key: 'id'
-        }
+        type: Sequelize.INTEGER
       },
       RestaurantId: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        reference: {
-          model: 'Restaurants',
-          key: 'id'
-        }
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,
