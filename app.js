@@ -45,8 +45,11 @@ app.use((req, res, next) => {
 routes(app)
 
 app.listen(port, () => {
-  db.sequelize.sync()
-  console.log(`Example app listening at http://localhost:${port}`)
+  db.sequelize.query('SET FOREIGN_KEY_CHECKS = 0', { raw: true })
+    .then(function () {
+      db.sequelize.sync({ force: true })
+      console.log(`Example app listening at http://localhost:${port}`)
+    })
 })
 
 module.exports = app
