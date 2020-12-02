@@ -12,12 +12,12 @@
     {{!-- Navbar --}}
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <a class="navbar-brand mr-auto" href="/">餐廳評論網</a>
-      {{#if user.isAdmin}}
+      {{#if User.isAdmin}}
         <a href="/admin" style="color: white;margin-right: 10px;">Admin 後台</a>
       {{/if}}
 
-      {{#if user}} <span style="color: white;margin-right: 10px;">Hi {{user.name}}</span>
-        <a class="btn btn-outline-light mr-2" href="#">Profile</a>
+      {{#if User}} <span style="color: white;margin-right: 10px;">Hi {{User.name}}</span>
+        <a class="btn btn-outline-light mr-2" href="/users/{{User.id}}">Profile</a>
         <a class="btn btn-outline-light" href="/signout">Sign Out</a>
       {{/if}}
     </nav>

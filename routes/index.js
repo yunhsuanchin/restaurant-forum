@@ -62,4 +62,8 @@ module.exports = (app) => {
     failureFlash: true
   }), userController.signIn)
   app.get('/signout', userController.signOut)
+
+  app.get('/users/:id', authenticator, userController.getUser)
+  app.get('/users/:id/edit', authenticator, userController.editUser)
+  app.put('/users/:id', authenticator, upload.single('image'), userController.putUser)
 }

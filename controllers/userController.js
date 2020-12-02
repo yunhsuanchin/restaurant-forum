@@ -1,5 +1,12 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
+const imgur = require('imgur-node-api')
+
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+
+const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 const User = db.User
 
 const userController = {
@@ -40,8 +47,63 @@ const userController = {
     req.flash('success_msg', 'Bye bye, see you next time.')
     res.redirect('/signin')
   },
-  getUser: (req, res) => {
+  getUser: async (req, res) => {
+    try {
+      const id = req.params.id
+      const user = await User.findByPk(id)
+      res.render('profile', { user: user.toJSON() })
+    } catch (error) {
+      console.log(error)
+    }
+  },
+  editUser: async (req, res) => {
+    try {
+      const id = Number(req.params.id)
+      if (req.user.id !== id) {
+        req.flash('error_msg', 'Access denied.')
+        return res.redirect('/restaurants')
+      }
+      const user = await User.findByPk(id)
+      res.render('edit', { user: user.toJSON() })
+    } catch (error) {
+      console.log(error)
+    }
+  },
+  putUser: async (req, res) => {
+    try {
+      const id = Number(req.params.id)
+      if (req.user.id !== id) {
+        req.flash('error_msg', 'Access denied.')
+        return res.redirect('/restaurants')
+      }
 
+      const { file } = req
+      if (!req.body.name) {
+        req.flash('error_msg', 'Name field can not be empty.')
+        return res.redirect('back')
+      }
+      const user = await User.findByPk(id)
+      user.name = req.body.name
+
+      if (file) {
+        imgur.setClientID(IMGUR_CLIENT_ID)
+        const imgurUpload = new Promise((resolve, reject) => {
+          imgur.upload(file.path, (err, img) => {
+            if (err) {
+              return reject(err)
+            }
+            return resolve(img)
+          })
+        })
+        const img = await imgurUpload
+        user.image = img.data.link
+      }
+      await user.save()
+      req.flash('success_msg', 'Successfully updated your profile!')
+      res.redirect(`/users/${id}`)
+    } catch (error) {
+      console.log(error)
+    }
   }
 }
 

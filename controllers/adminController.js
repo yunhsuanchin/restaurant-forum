@@ -139,8 +139,9 @@ const adminController = {
     try {
       const id = req.params.id
       const user = await User.findByPk(id)
-      if (user) {
-        return req.flash('error_msg', 'This user has not been registered.')
+      if (!user) {
+        req.flash('error_msg', 'This user has not been registered.')
+        return res.redirect('/admin/users')
       }
       user.isAdmin = user.isAdmin === false
       await user.save()
