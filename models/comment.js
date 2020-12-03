@@ -11,14 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate (models) {
       // define association here
-      Comment.belongsTo(models.Restaurant, {
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
-      })
-      Comment.belongsTo(models.User, {
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
-      })
+      Comment.belongsTo(models.Restaurant)
+      Comment.belongsTo(models.User)
     }
   };
   Comment.init({
