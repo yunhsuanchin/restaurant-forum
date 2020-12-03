@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
 const imgur = require('imgur-node-api')
+const helpers = require('../_helpers')
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
@@ -58,8 +59,8 @@ const userController = {
   },
   editUser: async (req, res) => {
     try {
-      const id = Number(req.params.id)
-      if (req.user.id !== id) {
+      const id = req.params.id
+      if (helpers.getUser(req).id.toString() !== id) {
         req.flash('error_msg', 'Access denied.')
         return res.redirect('/restaurants')
       }
@@ -71,8 +72,8 @@ const userController = {
   },
   putUser: async (req, res) => {
     try {
-      const id = Number(req.params.id)
-      if (req.user.id !== id) {
+      const id = req.params.id
+      if (helpers.getUser(req).id.toString() !== id) {
         req.flash('error_msg', 'Access denied.')
         return res.redirect('/restaurants')
       }
