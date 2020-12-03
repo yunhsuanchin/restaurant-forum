@@ -61,6 +61,7 @@ const restController = {
           { model: Comment, include: User }
         ]
       })
+      await restaurant.increment('viewCounts', { by: 1 })
       res.render('restaurant', { restaurant: restaurant.toJSON() })
     } catch (error) {
       console.log(error)
@@ -83,6 +84,17 @@ const restController = {
         include: [Restaurant, User]
       })
       res.render('feeds', { restaurants, comments })
+    } catch (error) {
+      console.log(error)
+    }
+  },
+  getDashboard: async (req, res) => {
+    try {
+      const id = req.params.id
+      const restaurant = await Restaurant.findByPk(id, {
+        include: [Comment, Category]
+      })
+      res.render('dashboard', { restaurant: restaurant.toJSON() })
     } catch (error) {
       console.log(error)
     }
