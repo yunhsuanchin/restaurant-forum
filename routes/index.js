@@ -30,6 +30,7 @@ module.exports = (app) => {
 
   app.get('/', authenticator, (req, res) => res.redirect('/restaurants'))
   app.get('/restaurants', authenticator, restController.getRestaurants)
+  app.get('/restaurants/feeds', authenticator, restController.getFeeds)
   app.get('/restaurants/:id', authenticator, restController.getRestaurant)
 
   app.post('/comments', authenticator, commentController.postComment)
