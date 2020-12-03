@@ -9,6 +9,8 @@ if (process.env.NODE_ENV !== 'production') {
 
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 const User = db.User
+const Comment = db.Comment
+const Restaurant = db.Restaurant
 
 const userController = {
   signUpPage: (req, res) => {
@@ -51,7 +53,9 @@ const userController = {
   getUser: async (req, res) => {
     try {
       const id = req.params.id
-      const user = await User.findByPk(id)
+      const user = await User.findByPk(id, {
+        include: { model: Comment, include: Restaurant }
+      })
       res.render('profile', { user: user.toJSON() })
     } catch (error) {
       console.log(error)
