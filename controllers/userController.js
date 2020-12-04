@@ -11,6 +11,7 @@ const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 const User = db.User
 const Comment = db.Comment
 const Restaurant = db.Restaurant
+const Favorite = db.Favorite
 
 const userController = {
   signUpPage: (req, res) => {
@@ -106,6 +107,29 @@ const userController = {
       await user.save()
       req.flash('success_msg', 'Successfully updated your profile!')
       res.redirect(`/users/${id}`)
+    } catch (error) {
+      console.log(error)
+    }
+  },
+  addFavorite: async (req, res) => {
+    try {
+      const restaurant = await Restaurant.findByPk(req.params.restaurantId)
+      await Favorite.create({
+        UserId: helpers.getUser(req).id,
+        RestaurantId: req.params.restaurantId
+      })
+      req.flash('success_msg', `Successfully added "${restaurant.name}" to your favorite!`)
+      res.redirect('back')
+    } catch (error) {
+      console.log(error)
+    }
+  },
+  removeFavorite: async (req, res) => {
+    try {
+      const restaurant = await Restaurant.findByPk(req.params.restaurantId)
+      await Favorite.destroy({ where: { UserId: helpers.getUser(req).id, RestaurantId: req.params.restaurantId } })
+      req.flash('success_msg', `Successfully removed "${restaurant.name} from your favorite!"`)
+      res.redirect('back')
     } catch (error) {
       console.log(error)
     }
