@@ -1,3 +1,4 @@
+const helpers = require('../_helpers')
 const db = require('../models')
 const Restaurant = db.Restaurant
 const Category = db.Category
@@ -32,10 +33,11 @@ const restController = {
       const next = page + 1 > totalPage ? totalPage : page + 1
       const pages = Array.from(Array(totalPage)).map((item, index) => index + 1)
 
-      const restaurants = data.rows.map((item) => ({
-        ...item,
-        categoryName: item.Category.name,
-        description: item.description.substring(0, 50)
+      const restaurants = data.rows.map((rest) => ({
+        ...rest,
+        categoryName: rest.Category.name,
+        description: rest.description.substring(0, 50),
+        isFavorited: helpers.getUser(req).FavoritedRestaurants.map((item) => item.id).includes(rest.id)
       }))
       const categories = await Category.findAll({ raw: true, nest: true })
       res.render('restaurants', {
@@ -58,11 +60,13 @@ const restController = {
       const restaurant = await Restaurant.findByPk(id, {
         include: [
           Category,
-          { model: Comment, include: User }
+          { model: Comment, include: User },
+          { model: User, as: 'FavoritedUsers' }
         ]
       })
+      const isFavorited = restaurant.FavoritedUsers.map((user) => user.id).includes(helpers.getUser(req).id)
       await restaurant.increment('viewCounts', { by: 1 })
-      res.render('restaurant', { restaurant: restaurant.toJSON() })
+      res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited })
     } catch (error) {
       console.log(error)
     }
