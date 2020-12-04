@@ -16,18 +16,26 @@
   {{#each users}}
     <div class="col-3">
       <a href="/users/{{this.id}}">
+      {{#if this.image}}
         <img class="" src="{{this.image}}" width="140px" height="140px">
+      {{else}}
+        <img class="" src="https://www.eguardtech.com/wp-content/uploads/2018/08/Network-Profile.png" alt="" width="140px" height="140px">
+      {{/if}}
       </a>
       <h2>{{this.name}}</h2>
       <span class="badge badge-secondary">追蹤人數：{{this.FollowerCount}}</span>
       <p>
-        {{#if this.isFollowed }}
-          <form action="/following/{{this.id}}?_method=DELETE" method="POST" style="display: contents;"><button
-              type="submit" class="btn btn-danger">取消追蹤</button></form>
+        {{#ifEqual ../User.id this.id}}
+          <button type="button" class="btn btn-dark mt-3" disabled>You</button>
         {{else}}
-          <form action="/following/{{this.id}}" method="POST" style="display: contents;"><button type="submit"
-              class="btn btn-primary">追蹤</button></form>
-        {{/if}}
+          {{#if this.isFollowed }}
+            <form action="/following/{{this.id}}?_method=DELETE" method="POST" style="display: contents;"><button
+                type="submit" class="btn btn-danger">取消追蹤</button></form>
+          {{else}}
+            <form action="/following/{{this.id}}" method="POST" style="display: contents;"><button type="submit"
+                class="btn btn-primary">追蹤</button></form>
+          {{/if}}
+        {{/ifEqual}}
       </p>
     </div>
   {{/each}}

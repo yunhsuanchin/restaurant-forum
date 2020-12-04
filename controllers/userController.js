@@ -13,6 +13,7 @@ const Comment = db.Comment
 const Restaurant = db.Restaurant
 const Favorite = db.Favorite
 const Like = db.Like
+const Followship = db.Followship
 
 const userController = {
   signUpPage: (req, res) => {
@@ -177,19 +178,50 @@ const userController = {
   getTopUser: async (req, res) => {
     try {
       let users = await User.findAll({
-        raw: true,
-        nest: true,
         include: [
           { model: User, as: 'Followers' }
         ]
       })
       users = users.map((user) => ({
-        ...user,
+        ...user.dataValues,
         FollowerCount: user.Followers.length,
         isFollowed: helpers.getUser(req).Followings.map((item) => item.id).includes(user.id)
       }))
       users = users.sort((a, b) => b.FollowerCount - a.FollowerCount)
       res.render('topUser', { users })
+    } catch (error) {
+      console.log(error)
+    }
+  },
+  addFollowing: async (req, res) => {
+    try {
+      const user = await User.findByPk(req.params.userId)
+      if (!user) {
+        req.flash('error_msg', 'This user does not exists.')
+        return res.redirect('back')
+      }
+      await Followship.create({
+        FollowerId: helpers.getUser(req).id,
+        FollowingId: req.params.userId
+      })
+      req.flash('success_msg', `You have followed ${user.name}!`)
+      res.redirect('back')
+    } catch (error) {
+      console.log(error)
+    }
+  },
+  removeFollowing: async (req, res) => {
+    try {
+      const user = await User.findByPk(req.params.userId)
+      if (!user) {
+        req.flash('error_msg', 'This user does not exists.')
+        return res.redirect('back')
+      }
+      await Followship.destroy({
+        where: { FollowerId: helpers.getUser(req).id, FollowingId: req.params.userId }
+      })
+      req.flash('success_msg', `You have unfollowed ${user.name}.`)
+      res.redirect('back')
     } catch (error) {
       console.log(error)
     }
