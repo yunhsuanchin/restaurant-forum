@@ -71,4 +71,7 @@ module.exports = (app) => {
 
   app.post('/favorite/:restaurantId', authenticator, userController.addFavorite)
   app.delete('/favorite/:restaurantId', authenticator, userController.removeFavorite)
+
+  app.post('/like/:restaurantId', authenticator, userController.likeRestaurant)
+  app.delete('/like/:restaurantId', authenticator, userController.unlikeRestaurant)
 }

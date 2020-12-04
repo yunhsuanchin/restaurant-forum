@@ -12,6 +12,7 @@ const User = db.User
 const Comment = db.Comment
 const Restaurant = db.Restaurant
 const Favorite = db.Favorite
+const Like = db.Like
 
 const userController = {
   signUpPage: (req, res) => {
@@ -114,6 +115,10 @@ const userController = {
   addFavorite: async (req, res) => {
     try {
       const restaurant = await Restaurant.findByPk(req.params.restaurantId)
+      if (!restaurant) {
+        req.flash('error_msg', 'This restaurant does not exists.')
+        return res.redirect('back')
+      }
       await Favorite.create({
         UserId: helpers.getUser(req).id,
         RestaurantId: req.params.restaurantId
@@ -127,8 +132,43 @@ const userController = {
   removeFavorite: async (req, res) => {
     try {
       const restaurant = await Restaurant.findByPk(req.params.restaurantId)
+      if (!restaurant) {
+        req.flash('error_msg', 'This restaurant does not exists.')
+        return res.redirect('back')
+      }
       await Favorite.destroy({ where: { UserId: helpers.getUser(req).id, RestaurantId: req.params.restaurantId } })
       req.flash('success_msg', `Successfully removed "${restaurant.name} from your favorite!"`)
+      res.redirect('back')
+    } catch (error) {
+      console.log(error)
+    }
+  },
+  likeRestaurant: async (req, res) => {
+    try {
+      const restaurant = await Restaurant.findByPk(req.params.restaurantId)
+      if (!restaurant) {
+        req.flash('error_msg', 'This restaurant does not exists.')
+        return res.redirect('back')
+      }
+      await Like.create({
+        UserId: helpers.getUser(req).id,
+        RestaurantId: req.params.restaurantId
+      })
+      req.flash('success_msg', `You just liked "${restaurant.name}"!`)
+      res.redirect('back')
+    } catch (error) {
+      console.log(error)
+    }
+  },
+  unlikeRestaurant: async (req, res) => {
+    try {
+      const restaurant = await Restaurant.findByPk(req.params.restaurantId)
+      if (!restaurant) {
+        req.flash('error_msg', 'This restaurant does not exists.')
+        return res.redirect('back')
+      }
+      await Like.destroy({ where: { UserId: helpers.getUser(req).id, RestaurantId: req.params.restaurantId } })
+      req.flash('success_msg', `You already unliked "${restaurant.name}."`)
       res.redirect('back')
     } catch (error) {
       console.log(error)

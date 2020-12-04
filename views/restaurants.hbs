@@ -33,15 +33,29 @@
           </p>
           <span class="badge badge-secondary">{{this.categoryName}}</span>
           <p class="card-text">{{this.description}}</p>
-        {{#if this.isFavorited}}
-          <form action="/favorite/{{this.id}}?_method=DELETE" method="POST" onsubmit="return confirm('Are you ready to remove {{this.name}} from your favorite?')">
-            <button type="submit" class="btn btn-danger">移除最愛</button>
-          </form>
-        {{else}}
-          <form action="/favorite/{{this.id}}" method="POST">
-            <button type="submit" class="btn btn-primary">加到最愛</button>
-          </form>
-        {{/if}}
+        </div>
+        <div class="card-footer">
+          {{!-- add or remove from Favorite --}}
+          {{#if this.isFavorited}}
+            <form action="/favorite/{{this.id}}?_method=DELETE" method="POST" onsubmit="return confirm('Are you ready to remove {{this.name}} from your favorite?')" class="d-inline">
+              <button type="submit" class="btn btn-danger">移除最愛</button>
+            </form>
+          {{else}}
+            <form action="/favorite/{{this.id}}" method="POST" class="d-inline">
+              <button type="submit" class="btn btn-primary">加到最愛</button>
+            </form>
+          {{/if}}
+
+          {{!-- like or unlike --}}
+          {{#if this.isLiked}}
+            <form action="/like/{{this.id}}?_method=DELETE" method="POST" onsubmit="return confirm('Unlike {{this.name}} ?')" class="d-inline">
+              <button type="submit" class="btn btn-warning">Unlike</button>
+            </form>
+          {{else}}
+            <form action="/like/{{this.id}}" method="POST" class="d-inline">
+              <button type="submit" class="btn btn-success">Like</button>
+            </form>
+          {{/if}}
         </div>
       </div>
     </div>
