@@ -18,7 +18,16 @@ const adminService = {
     } catch (error) {
       console.log(error)
     }
-  }
+  },
+  getRestaurant: async (req, res, callback) => {
+    try {
+      const id = req.params.id
+      const restaurant = await Restaurant.findByPk(id, { include: Category })
+      callback({ restaurant: restaurant.toJSON() })
+    } catch (error) {
+      console.log(error)
+    }
+  },
 }
 
 module.exports = adminService
