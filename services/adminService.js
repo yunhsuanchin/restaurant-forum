@@ -28,6 +28,17 @@ const adminService = {
       console.log(error)
     }
   },
+  deleteRestaurant: async (req, res, callback) => {
+    try {
+      const id = req.params.id
+      await Restaurant.destroy({
+        where: { id }
+      })
+      callback({ status: 'success', message: '' })
+    } catch (error) {
+      console.log(error)
+    }
+  }
 }
 
 module.exports = adminService
