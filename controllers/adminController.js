@@ -25,40 +25,15 @@ const adminController = {
       console.log(error)
     }
   },
-  postRestaurant: async (req, res) => {
-    try {
-      const { file } = req
-      const restaurant = Object.assign({}, req.body)
-      if (!restaurant.name) {
-        req.flash('error_msg', 'Name field is required.')
+  postRestaurant: (req, res) => {
+    adminService.postRestaurant(req, res, (data) => {
+      if (data['status'] === 'error') {
+        req.flash('error_messages', data['message'])
         return res.redirect('back')
       }
-
-      if (file) {
-        imgur.setClientID(IMGUR_CLIENT_ID)
-        const imgurUpload = new Promise((resolve, reject) => {
-          imgur.upload(file.path, (err, img) => {
-            if (err) {
-              return reject(err)
-            }
-            return resolve(img)
-          })
-        })
-        const img = await imgurUpload
-        restaurant.image = img.data.link
-        // const data = fs.readFileSync(file.path)
-        // fs.writeFileSync(`upload/${file.originalname}`, data)
-        // restaurant.image = `/upload/${file.originalname}`
-      } else {
-        restaurant.image = null
-      }
-
-      await Restaurant.create(restaurant)
-      req.flash('success_msg', 'Successfully create a new restaurant.')
+      req.flash('success_messages', data['message'])
       res.redirect('/admin/restaurants')
-    } catch (error) {
-      console.log(error)
-    }
+    })
   },
   getRestaurant: async (req, res) => {
     adminService.getRestaurant(req, res, (data) => {
