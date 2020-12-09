@@ -151,13 +151,6 @@ const userController = {
         req.flash('error_msg', 'This restaurant does not exists.')
         return res.redirect('back')
       }
-      const LikedRestaurants = await Like.findAll({
-        raw: true,
-        nest: true,
-        where: { UserId: helpers.getUser(req).id }
-      })
-      if (LikedRestaurants.map((item) => item.RestaurantId).includes(req.params.restaurantId)) return
-
       await Like.create({
         UserId: helpers.getUser(req).id,
         RestaurantId: req.params.restaurantId
