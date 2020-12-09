@@ -56,10 +56,28 @@ const userController = {
   getUser: async (req, res) => {
     try {
       const id = req.params.id
-      const user = await User.findByPk(id, {
-        include: { model: Comment, include: Restaurant }
+      let user = await User.findByPk(id, {
+        include: [
+          { model: Comment, include: Restaurant },
+          { model: User, as: 'Followings' },
+          { model: User, as: 'Followers' },
+          { model: Restaurant, as: 'FavoritedRestaurants' }
+        ],
+        order: [
+          [{ model: Comment, include: Restaurant }, 'createdAt', 'DESC'],
+          [{ model: User, as: 'Followings' }, 'createdAt', 'DESC'],
+          [{ model: User, as: 'Followers' }, 'createdAt', 'DESC'],
+          [{ model: Restaurant, as: 'FavoritedRestaurants' }, 'createdAt', 'DESC']
+        ]
       })
-      res.render('profile', { user: user.toJSON() })
+      if (!user) {
+        req.flash('error_msg', 'This user does not exists.')
+        return res.redirect('back')
+      }
+      user = user.toJSON()
+      const set = new Set()
+      const newComments = user.Comments.filter((item) => !set.has(item.RestaurantId) ? set.add(item.RestaurantId) : false)
+      res.render('profile', { user, newComments })
     } catch (error) {
       console.log(error)
     }
@@ -120,6 +138,12 @@ const userController = {
         req.flash('error_msg', 'This restaurant does not exists.')
         return res.redirect('back')
       }
+      const FavoritedRestaurants = await Favorite.findAll({
+        raw: true,
+        nest: true,
+        where: { UserId: helpers.getUser(req).id }
+      })
+      if (FavoritedRestaurants.map((item) => item.id).includes(req.params.restaurantId)) return
       await Favorite.create({
         UserId: helpers.getUser(req).id,
         RestaurantId: req.params.restaurantId
@@ -208,8 +232,8 @@ const userController = {
         return res.redirect('back')
       }
       await Followship.create({
-        FollowerId: helpers.getUser(req).id,
-        FollowingId: req.params.userId
+        followerId: helpers.getUser(req).id,
+        followingId: req.params.userId
       })
       req.flash('success_msg', `You have followed ${user.name}!`)
       res.redirect('back')
@@ -225,7 +249,7 @@ const userController = {
         return res.redirect('back')
       }
       await Followship.destroy({
-        where: { FollowerId: helpers.getUser(req).id, FollowingId: req.params.userId }
+        where: { followerId: helpers.getUser(req).id, followingId: req.params.userId }
       })
       req.flash('success_msg', `You have unfollowed ${user.name}.`)
       res.redirect('back')

@@ -24,15 +24,69 @@
   </div>
 </div>
 
+<div class="row mb-3">
+  <div class="card-deck col">
+    {{!-- followings --}}
+    <div class="card">
+      <div class="card-header">
+        <strong>{{user.Followings.length}}</strong> followings
+      </div>
+      <div class="card-body">
+        {{#each user.Followings}}
+          <a href="/users/{{this.id}}" class="rest-img d-inline-block mb-3 mr-2" title="{{this.name}}">
+          {{#if this.image}}
+            <img src="{{this.image}}" alt="" class="rounded" style="width: 6rem;">
+          {{else}}
+            <img src="https://www.eguardtech.com/wp-content/uploads/2018/08/Network-Profile.png" alt="" class="rounded" style="width: 6rem;">
+          {{/if}}
+          </a>
+        {{/each}}
+      </div>
+    </div>
+  </div>
+  <div class="card-deck col">
+    {{!-- followers --}}
+    <div class="card">
+      <div class="card-header">
+        <strong>{{user.Followers.length}}</strong> followers
+      </div>
+      <div class="card-body">
+        {{#each user.Followers}}
+          <a href="/users/{{this.id}}" class="rest-img d-inline-block mb-3 mr-2" title="{{this.name}}">
+          {{#if this.image}}
+            <img src="{{this.image}}" alt="" class="rounded" style="width: 6rem;">
+          {{else}}
+            <img src="https://www.eguardtech.com/wp-content/uploads/2018/08/Network-Profile.png" alt="" class="rounded" style="width: 6rem;">
+          {{/if}}
+          </a>
+        {{/each}}
+      </div>
+    </div>
+  </div>
+</div>
 {{!-- commented restaurants --}}
-<div class="card">
+<div class="card mb-3">
   <div class="card-header">
-      <strong>{{user.Comments.length}}  </strong>已評論餐廳
+      <strong>{{newComments.length}}</strong> 已評論餐廳
   </div>
   <div class="card-body">
-    {{#each user.Comments}}
+    {{#each newComments}}
       <a href="/restaurants/{{this.Restaurant.id}}" class="rest-img d-inline-block mb-3 mr-2" title="{{this.Restaurant.name}}">
         <img src="{{this.Restaurant.image}}" alt="" class="rounded" style="width: 8rem;">
+      </a>
+    {{/each}}
+  </div>
+</div>
+
+{{!-- favorited restaurants --}}
+<div class="card mb-5">
+  <div class="card-header">
+      <strong>{{user.FavoritedRestaurants.length}}</strong> 收藏的餐廳
+  </div>
+  <div class="card-body">
+    {{#each user.FavoritedRestaurants}}
+      <a href="/restaurants/{{this.id}}" class="rest-img d-inline-block mb-3 mr-2" title="{{this.name}}">
+        <img src="{{this.image}}" alt="" class="rounded" style="width: 8rem;">
       </a>
     {{/each}}
   </div>
