@@ -7,12 +7,21 @@ const adminController = require('../controllers/api/adminController.js')
 const categoryController = require('../controllers/api/categoryController')
 const userController = require('../controllers/api/userController')
 
-router.get('/admin/restaurants', adminController.getRestaurants)
-router.get('/admin/restaurants/:id', adminController.getRestaurant)
-router.post('/admin/restaurants', upload.single('image'), adminController.postRestaurant)
-router.delete('/admin/restaurants/:id', adminController.deleteRestaurant)
+const isAuthenticatedAdmin = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    if (req.user.isAdmin) { return next() }
+    return res.json({ status: 'error', message: 'Permission denied.' })
+  } else {
+    return res.json({ status: 'error', message: 'Permission denied.' })
+  }
+}
 
-router.get('/admin/categories', categoryController.getCategories)
+router.get('/admin/restaurants', isAuthenticatedAdmin, adminController.getRestaurants)
+router.get('/admin/restaurants/:id', isAuthenticatedAdmin, adminController.getRestaurant)
+router.post('/admin/restaurants', isAuthenticatedAdmin, upload.single('image'), adminController.postRestaurant)
+router.delete('/admin/restaurants/:id', isAuthenticatedAdmin, adminController.deleteRestaurant)
+
+router.get('/admin/categories', isAuthenticatedAdmin, categoryController.getCategories)
 
 router.post('/signin', userController.signIn)
 
